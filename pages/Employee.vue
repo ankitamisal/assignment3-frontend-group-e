@@ -57,7 +57,7 @@
                     <th class="px-4 border-black rounded-lg border-2">Action</th>
                 </tr>
                 <tr v-for="(item, index) of empp.allEmp" :key="item.id">
-                    <!-- <td class="px-4 border-black rounded-lg border-2">{{item.id=i+1}}</td> -->
+
                     <td class="px-4 border-black rounded-lg border-2">
                         {{ item.id }}
                     </td>
@@ -133,7 +133,7 @@ async function onEdit(id) {
         "Emp_Add": "ghjgj" + empp.allEmp.length,
         "Emp_Gender": "M" + empp.allEmp.length,
         "Emp_profile": "" + empp.allEmp.length,
-        // "book_number": "91001" + state.allBooks.length
+
     };
     const response = await $fetch('http://localhost:8080/Employeee/' + id, {
         method: 'PATCH',
