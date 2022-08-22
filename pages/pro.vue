@@ -74,66 +74,16 @@
         </div>
     </div>
 </template>
-<script>
-export default {
-    data() {
-        return {
-            isEdit: false,
-            indexEdit: -1,
-            users: [],
-            userAddress: '',
-            user: {
-                ProductName: '',
-                Price: '',
-                Stock: '',
-                Size: '',
-                Image: '',
-            },
-        };
-    },
-    methods: {
-        formSubmit(event) {
-            event.preventDefault();
-            // if(this.user.ProductName==""||this.user.ProductName==null||this.user.Price==""|| this.user.Price==null|| this.user.Stock==""||this.user.Stock==null|| this.user.Color==""||this.user.Color==null)
-            // {alert("please fill all the fields");
-            // this.onReset();
-            // }else{console.log("Hi");}
-            if (this.isEdit == true) {
-                this.users[this.indexEdit] = this.user;
-                this.isEdit = false;
-                this.indexEdit = -1;
-            }
-            else {
-                this.users.push(this.user);
-            }
-            this.user = {
-                ProductName: '',
-                Price: '',
-                Stock: '',
-                Size: '',
-                Image: '',
-            };
-        },
-        onReset(event) {
-            event.preventDefault();
-            this.form.ProductName = "";
-            this.form.Price = "";
-            this.form.Stock = "";
-            this.form.Size = "";
-            this.form.Image = "";
-        },
-        userDelete(index) {
-            this.users.splice(index, 1)
-        },
-        onEdit(index) {
-            this.user.ProductName = this.users[index].ProductName;
-            this.user.Price = this.users[index].Price;
-            this.user.Stock = this.users[index].Stock;
-            this.user.Size = this.users[index].Size;
-            this.user.Image = this.users[index].Image;
-            this.isEdit = true;
-            this.indexEdit = index;
-        },
-    }
-}
+<script setup>
+// async function addCompany( data ){
+//     await $fetch( 'http://localhost:8080/feed', {
+//         method: 'POST',
+//         body: data
+//     } );
+// }
+
+
+// function useFetch(
+//     url: "http://localhost:8080/feed/allData",
+// )
 </script>
