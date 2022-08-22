@@ -20,7 +20,7 @@
         </p>
       </div>
     </div>
-    <!-- card 2 -->
+    <!-- card  uaer 2 -->
     <div class="rounded overflow-hidden shadow-lg">
       <div class="px-6 py-4">
         <div class="font-bold text-xl mb-2">
