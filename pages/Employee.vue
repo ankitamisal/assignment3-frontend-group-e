@@ -40,7 +40,7 @@
             <button
                 class="py-1 px-5 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
                 type="submit">
-                get
+                Get
             </button>
 
             <br />
@@ -148,8 +148,4 @@ async function onDelete(id) {
     });
     getApi();
 }
-
-
-
-
 </script>
