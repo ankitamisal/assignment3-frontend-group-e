@@ -3,7 +3,7 @@
         <div>
             <form class="bg-gray-100 border-black rounded-lg border-2 px-12" method="post">
                 <table>
-                    <h2 class="text-teal-900 text-xl font-bold pt-6">Employee Management</h2>
+                    <h2 class="text-teal-900 text-xl font-bold pt-6">Employee Management </h2>
                     <hr />
                     <br />
                     <label class="pt-10 py-10" for="book-name">Emp_FirstName:</label><br />
@@ -97,13 +97,7 @@ let empp = reactive({
 
 
 getApi();
-// Calling Get API
-// function getBooks() {
-//   getBookAPI().then((data: any) => {
-//     state.allBooks = data;
-//   });
-// }
-// GET API
+
 async function getApi() {
     empp.allEmp = await $fetch('http://localhost:8080/Employeee/');
 }
