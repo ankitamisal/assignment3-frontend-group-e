@@ -17,6 +17,9 @@
                     <label for="emp-address">Emp_Add: </label><br />
                     <input type="text" id="emp-address" name="emp-address" placeholder="Enter your Addres" />
                     <br /><br />
+                    <label for="emp-address">Emp_Gender: </label><br />
+                    <input type="text" id="emp-gender" name="emp-gender" placeholder="Enter your Gender" />
+                    <br /><br />
                     <label for="employee-image">Emp_profile: </label><br />
                     <input type="file" id="book-image" name="employee-image" />
                     <br /><br />
