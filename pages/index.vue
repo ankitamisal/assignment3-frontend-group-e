@@ -15,8 +15,9 @@
           </NuxtLink>
         </div>
         <p class="text-gray-700 text-base">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia,
-          Nonea! Maiores et perferendis eaque, exercitationem praesentium nihil.
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus
+          quia, Nonea! Maiores et perferendis eaque, exercitationem praesentium
+          nihil.
         </p>
       </div>
     </div>
@@ -29,8 +30,9 @@
           </NuxtLink>
         </div>
         <p class="text-gray-700 text-base">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia,
-          Nonea! Maiores et perferendis eaque, exercitationem praesentium nihil.
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus
+          quia, Nonea! Maiores et perferendis eaque, exercitationem praesentium
+          nihil.
         </p>
       </div>
     </div>
@@ -45,8 +47,9 @@
           </NuxtLink>
         </div>
         <p class="text-gray-700 text-base">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia,
-          Nonea! Maiores et perferendis eaque, exercitationem praesentium nihil.
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus
+          quia, Nonea! Maiores et perferendis eaque, exercitationem praesentium
+          nihil.
         </p>
       </div>
     </div>
@@ -61,8 +64,9 @@
           </NuxtLink>
         </div>
         <p class="text-gray-700 text-base">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia,
-          Nonea! Maiores et perferendis eaque, exercitationem praesentium nihil.
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus
+          quia, Nonea! Maiores et perferendis eaque, exercitationem praesentium
+          nihil.
         </p>
       </div>
     </div>
@@ -71,13 +75,14 @@
     <div class="rounded overflow-hidden shadow-lg">
       <div class="px-6 py-4">
         <div class="font-bold text-xl mb-2">
-          <NuxtLink to="/Product" class="hover:text-red-600 mr-2">
+          <NuxtLink to="/product" class="hover:text-red-600 mr-2">
             Product Management
           </NuxtLink>
         </div>
         <p class="text-gray-700 text-base">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia,
-          Nonea! Maiores et perferendis eaque, exercitationem praesentium nihil.
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus
+          quia, Nonea! Maiores et perferendis eaque, exercitationem praesentium
+          nihil.
         </p>
       </div>
     </div>
