@@ -109,8 +109,8 @@ let state = reactive({
   Submit: "Submit",
   select: true,
   allBooks: [],
+  book_id: "",
   data: {
-    book_id: "",
     book_name: "",
     author: "",
     price: "",
@@ -142,7 +142,7 @@ function clareData() {
   state.data.price = "";
   state.data.book_image = "";
   state.data.book_number = "";
-  state.data.book_id = "";
+  state.book_id = "";
 }
 
 function recet1() {
@@ -154,9 +154,8 @@ function recet1() {
 // POST API
 async function onFormSubmit() {
 
-  if (state.select == true) {
+  if (state.select === true) {
     const sampleData = state.data;
-
     const response = await $fetch('http://localhost:3001/book', {
       method: 'POST',
       body: JSON.stringify(sampleData),
@@ -164,14 +163,15 @@ async function onFormSubmit() {
 
     getBookAPI();
     clareData();
-    alert("Data added successfully:")
+    alert("Data added successfully:");
 
 
   } else {
-    let bookId = state.data.book_id;
+    let bookId = state.book_id;
     putData(bookId);
     alert(`data update successfully ${bookId}`);
     clareData();
+    state.select = true;
   }
 }
 
@@ -185,7 +185,7 @@ async function onClickOfEditBook(bookId) {
   state.data.price = edit.price;
   state.data.book_image = state.data.book_image;
   state.data.book_number = edit.book_number;
-  state.data.book_id = edit.book_id
+  state.book_id = edit.book_id
 
 
 
