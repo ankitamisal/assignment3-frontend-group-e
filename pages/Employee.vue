@@ -104,6 +104,7 @@ getApi();
 async function getApi() {
     empp.allEmp = await $fetch('http://localhost:8080/Employeee/');
 }
+//create new employee
 // POST API
 async function Submit() {
 
@@ -115,6 +116,7 @@ async function Submit() {
         "Emp_Add": "pund" + empp.allEmp.length,
         "Emp_Gender": "M" + empp.allEmp.length,
         "Emp_profile": "" + empp.allEmp.length,
+
 
     };
     await $fetch('http://localhost:8080/Employeee/', {
