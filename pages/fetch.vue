@@ -1,8 +1,8 @@
 <script setup>
-const { data: count } = await useFetch('http://localhost:8080/feed/allData')
+const { data: count } = await useFetch('http://localhost:8080/product/allData')
 let userData = count
-console.log("product name =", typeof count)
-console.log("product name =", count)
+//console.log("product name =", typeof count)
+//console.log("product name =", count)
 // dataFetch = () => {
 //     const { data: count } = await useFetch('http://localhost:8080/feed/allData')
 
@@ -28,6 +28,7 @@ console.log("product name =", count)
 
 <template>
     <div class="border-black  border-2 m-8 p-8">
+
         <table class="list">
             <tr>
                 <!-- <th class="px-4 border-black rounded-lg border-2">id</th> -->
@@ -59,7 +60,7 @@ console.log("product name =", count)
                 </td>
             </tr>
         </table>
-        <p>{{ "sdf" }}</p>
+
     </div>
 
 </template>
