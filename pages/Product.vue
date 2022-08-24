@@ -39,7 +39,7 @@
             ref="stock"
           >
             <option value="Available" selected>Available</option>
-            <option value="Out of Stock ">Out of Stock</option></select
+            <option value="OutOfStock">Out of Stock</option></select
           ><br /><br />
           <label for="Size">Size:</label>
           <select
@@ -49,7 +49,7 @@
             id="Size"
             ref="size"
           >
-            <option value="XS">XS</option>
+            <!-- <option value="XS">XS</option> -->
             <option value="S">S</option>
             <option value="M" selected>M</option>
             <option value="L">L</option>
@@ -173,6 +173,8 @@ async function onFormSubmit1() {
   getProductAPI();
 }
 // // PATCH API
+
+let edit = mydata.product;
 async function onClickOfEditProduct(id) {
   const sampleData = {
     id: id,
@@ -190,23 +192,18 @@ async function onClickOfEditProduct(id) {
   getProductAPI();
 }
 async function editProduct(id) {
-  let productEdit = mydata.product.filter(
-    (product: {
-      id: any;
-      productName: any;
-      price: any;
-      stock: any;
-      size: any;
-    }) => {
-      if ((product.id = id)) {
-        mydata.product.id = product.id;
-        mydata.product.productName = product.productName;
-        mydata.product.price = product.price;
-        mydata.product.stock = product.stock;
-        mydata.product.size = product.size;
-      }
+  console.log("top console from patch api");
+  let productEdit = mydata.allProduct.filter((product) => {
+    if ((product.id = id)) {
+      mydata.product.id = product.id;
+      mydata.product.productName = product.productName;
+      mydata.product.price = product.price;
+      mydata.product.stock = product.stock;
+      mydata.product.size = product.size;
+      return product;
+      console.log("patch api");
     }
-  );
+  });
   console.log(productEdit);
   const response = await $fetch("http://localhost:8080/product/" + id, {
     method: "PATCH",
