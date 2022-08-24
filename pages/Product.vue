@@ -193,13 +193,14 @@ async function onClickOfEditProduct(id) {
 }
 async function editProduct(id) {
   console.log("top console from patch api");
-  let productEdit = mydata.product.filter((product) => {
+  let productEdit = mydata.allProduct.filter((product) => {
     if ((product.id = id)) {
       mydata.product.id = product.id;
       mydata.product.productName = product.productName;
       mydata.product.price = product.price;
       mydata.product.stock = product.stock;
       mydata.product.size = product.size;
+      return product;
       console.log("patch api");
     }
   });
