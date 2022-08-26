@@ -1,59 +1,283 @@
 <template>
-<main class="flex justify-center w-full h-screen">
+  <main class="flex justify-center w-full h-screen">
     <div>
-        <form @submit="formSubmit" class="bg-gray-100 border-black rounded-lg border-2 px-12">
-            <table>
-                <h2 class="text-teal-900 text-xl font-bold pt-6">User Management</h2>
-                <hr />
-                <br />
-                <label class="pt-10 py-10 " for="firstname">User ID :</label><br />
-                <input type="number" v-model="user.id" id="id" name="id" placeholder="Enter User Id" /><br /><br />
-                <label for="lastname">Name :</label><br />
-                <input type="text" v-model="user.name" id="name" name="name" placeholder="Enter User name" /><br /><br />
-                <label for="address"> State: </label><br />
-                <input type="text" v-model="user.State" id="state" name="state" placeholder="Enter your state" />
-                <br /><br />
-                <label for="image">Image </label><br />
-                <input type="text" v-model="user.Image" id="" name="image" placeholder="" />
-                <br /><br />
-                <div>
-                    <button class="py-1 px-5 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3" type="submit" @click="formSubmit"> Submit </button>
-                    <button class="py-1 px-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3" type="reset"> Reset </button>
-                </div>
-            </table>
-        </form>
-        <table class="list">
-            <tr>
-                <!-- <th class="px-4 border-black rounded-lg border-2">id</th> -->
-                <th class="px-4 border-black rounded-lg border-2">user Id</th>
-                <th class="px-4 border-black rounded-lg border-2">Name</th>
-                <th class="px-4 border-black rounded-lg border-2">State</th>
-                <th class="px-4 border-black rounded-lg border-2">Image No</th>
+      <form class="bg-gray-100 border-black rounded-lg border-2 px-12">
+        <table>
+          <h2 class="text-teal-900 text-xl font-bold pt-6">User Management</h2>
+          <hr />
+          <br />
+          <label>Name :</label
+          ><br />
+          <input
+            type="text"
+            v-model="state.user.name"
+            id="name"
+            name="name"
+            placeholder="Enter User name"
+            :v="v$.name"
+          />
+          <span class=" text-red-900" v-for="error in v$.name.$errors" :key="error.$uid"> {{ error.$message }}</span>
+          <br /><br />
 
-            </tr>
-            <tr v-for="(item,index) in user" :key="user.id">
-                <!-- <td class="px-4 border-black rounded-lg border-2">{{item.id=i+1}}</td> -->
-                <td class="px-4 border-black rounded-lg border-2">{{item.id}}</td>
-                <td class="px-4 border-black rounded-lg border-2">{{item.name}}</td>
-                <td class="px-4 border-black rounded-lg border-2">{{item.State}}</td>
-                <td class="px-4 border-black rounded-lg border-2">{{item.Image}}</td>
-                <td>
-                    <button class="mx-3" @click="userDelete(item.index)">
-                        Delete
-                    </button>
-                    <button class="mx-3" @click="on(item.index)">
-                        Edit
-                    </button>
-                </td>
-            </tr>
+          <label>Email :</label
+          ><br />
+          <input
+            type="text"
+            v-model="state.user.Email"
+            id="email"
+            name="email"
+            placeholder="Enter User Email"
+            :v="v$.Email"
+          />
+          <span v-if="v$.Email.$error"> {{ v$.Email.$error[0].$message }}</span>
+          <br /><br />
+          <label> State:</label
+          ><br />
+          <input
+            type="text"
+            v-model="state.user.State"
+            id="state"
+            name="state"
+            placeholder="Enter your state"
+          />
+          <span v-if="v$.State.$error"> {{ v$.State.$error[0].$message }}</span>
+          <br /><br />
+
+          <label>image </label
+          ><br />
+          <input
+            type="text"
+            v-model="state.user.Image"
+            id=""
+            name="image"
+            placeholder="Image"
+          />
+          <span v-if="v$.Image.$error"> {{ v$.Image.$error[0].$message }}</span>
+          <br /><br />
+          <!-- <label for="Image">createdAt </label
+          ><br />
+          <input
+            type="text"
+
+            id=""
+            name="image"
+            placeholder=""
+          /> -->
+          <br /><br />
+          <div>
+            <button
+              class="py-1 px-5 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
+              type="submit"
+              @click="onFormSubmit()"
+            >
+              Submit
+            </button>
+            <button
+              class="py-1 px-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
+              type="reset"
+            >
+              Reset
+            </button>
+          </div>
         </table>
+      </form>
+      <table class="list">
+        <tr>
+          <!-- <th class="px-4 border-black rounded-lg border-2">id</th> -->
+          <th class="px-4 border-black rounded-lg border-2">id</th>
+          <th class="px-4 border-black rounded-lg border-2">name</th>
+          <th class="px-4 border-black rounded-lg border-2">Email</th>
+          <th class="px-4 border-black rounded-lg border-2">State</th>
+          <th class="px-4 border-black rounded-lg border-2">Image</th>
+          <!-- <td class="px-4 border-black rounded-lg border-2">createdAt</td> -->
+        </tr>
+        <tr v-for="(item, index) in state.allusers" :key="item">
+          <!-- <td class="px-4 border-black rounded-lg border-2">{{item.id=i+1}}</td> -->
+          <td class="px-4 border-black rounded-lg border-2">{{ item.id }}</td>
+          <td class="px-4 border-black rounded-lg border-2">{{ item.name }}</td>
+          <td class="px-4 border-black rounded-lg border-2">
+            {{ item.State }}
+          </td>
+          <td class="px-4 border-black rounded-lg border-2">
+            {{ item.Image }}
+          </td>
+          <!--  <td class="px-4 border-black rounded-lg border-2">
+            {{ item.createdAt }}
+          </td> -->
+          <td>
+            <button
+              class="mx-3 bg- rounded bg-blue-500 hover:bg-blue-700"
+              @click="onDeleteOfuser(item.id)"
+            >
+              Delete
+            </button>
+            <button
+              class="mx-3 rounded bg-blue-500 hover:bg-blue-700"
+              @click="onClickOfEdituser(item.id)"
+            >
+              Edit
+            </button>
+          </td>
+        </tr>
+      </table>
     </div>
-</main>
+  </main>
 </template>
 
 <script setup lang="ts">
+import useVuelidate,{
+    required,
+    email,
+    minLength,
 
-       
-const{data: count} = await useFetch('http://localhost:8080/user')
-let user= count
+} from "~/utils/vuelidate/useVuelidate";
+import Vuelidate from 'vuelidate'
+import {computed,reactive} from 'vue';
+
+   // name: "User",
+// const{data: count} = await useFetch('http://localhost:8080/user')
+// let user= count
+
+
+let state = reactive({
+    allusers: [],
+   id: '',
+    user: {
+
+        name: "",
+        Email: "",
+        State: "",
+        Image: ""
+    },
+});
+
+let sampleData=reactive({
+        name: "",
+        Email: "",
+        State: "",
+        Image: ""
+});
+
+const rules= computed(()=>{
+    return{
+    name: {
+        required,
+        minLength:minLength(3)
+    },
+    Email: {
+        required,
+        email
+    },
+    State: {
+        required,
+    },
+    Image: {
+        required
+    }
+    }
+});
+
+const v$ = useVuelidate(rules, state.user);
+
+// let info = {
+
+//     name: "",
+//     Email: "",
+//     State: "",
+//     Image: ""
+// };
+
+// const rules = computed(() => {
+//         return {
+
+//             name: {
+//                 required
+//             },
+//             Email: {
+//                 required,
+//                 email
+//             },
+//             State: {
+//                 required
+//             },
+//             Image: {
+//                 required
+//             }
+
+//         }
+//     }),
+
+// async function login(): Promise < void > {
+//         const isUSerCorrect = await v$.value.$validate();
+//         if (!isUserCorrect) {
+
+//             return {
+//                 state,
+//                 v$
+//             }
+//         }
+//         const payload = {
+//             ...state.form
+//         };
+
+getuserAPI();
+// Calling Get API
+function getuser() {
+    getuserAPI().then((data: any) => {
+        state.allusers = data;
+    });
+}
+// GET API
+async function getuserAPI() {
+    state.allusers = await $fetch("http://localhost:3001/user/");
+}
+// POST API
+async function onFormSubmit() {
+      const result=await v$.value.$validate();
+      if(result==true){
+            alert('form succesffuly submited')
+        } else {
+            alert('form fail validation')
+        }
+    
+    //const user = state.user;
+
+    const response = await $fetch("http://localhost:3001/user/", {
+        method: "POST",
+         body: JSON.stringify(state.user),
+
+    });
+    getuserAPI();
+
+}
+
+// get by ID
+async function onClickOfEdituser(id) {
+
+    const edit = await $fetch("http://localhost:3001/user/" + id);
+
+    state.id = edit.id;
+    state.user.name = edit.name;
+    state.user.Email = edit.Email;
+    state.user.State = edit.State;
+    state.user.Image = edit.Image;
+    getuserAPI();
+}
+
+// PATCH API
+async function putData() {
+    const response = await $fetch("http://localhost:3001/user/" + state.id, {
+        method: "PATCH",
+        body: JSON.stringify(state.user),
+
+    });
+}
+//Delete API
+async function onDeleteOfuser(id) {
+    await $fetch("http://localhost:3001/user/" + id, {
+        method: "DELETE",
+    });
+    getuserAPI();
+
+}
 </script>
