@@ -141,6 +141,7 @@ import {computed,reactive} from 'vue';
 
 let state = reactive({
     allusers: [],
+    edit : true,
    id: '',
     user: {
 
@@ -241,13 +242,20 @@ async function onFormSubmit() {
         }
     
     //const user = state.user;
+    if(state.edit===true)
+    {
 
+    
     const response = await $fetch("http://localhost:3001/user/", {
         method: "POST",
          body: JSON.stringify(state.user),
 
     });
     getuserAPI();
+    
+    }else{
+        putData();
+    }
 
 }
 
@@ -262,6 +270,7 @@ async function onClickOfEdituser(id) {
     state.user.State = edit.State;
     state.user.Image = edit.Image;
     getuserAPI();
+    state.edit=false;
 }
 
 // PATCH API
@@ -270,7 +279,11 @@ async function putData() {
         method: "PATCH",
         body: JSON.stringify(state.user),
 
+
     });
+
+    state.user.edit=true;
+
 }
 //Delete API
 async function onDeleteOfuser(id) {
