@@ -81,30 +81,6 @@
   </main>
 </template>
 <script setup lang="ts">
-
-// let book_name = ref("book_name");
-// let book_price = ref("book_price");
-// let book_author = ref("book_author")
-
-
-// const count: any = await $fetch('http://localhost:3001/book');
-
-
-// async function getdata() {
-//   const allData = await $fetch('http://localhost:3001/book');
-//   console.log(allData);
-// }
-// function userDelete(id) {
-//   console.log("hiii" + id);
-// }
-
-
-
-// async function editData(id) {
-//   const { data: one } = await useFetch('http://localhost:3001/book/' + id);
-//   console.log(one);
-
-// }
 let state = reactive({
   Submit: "Submit",
   select: true,
@@ -177,7 +153,7 @@ async function onFormSubmit() {
 
 // PATCH API
 async function onClickOfEditBook(bookId) {
-  state.Submit = "Uadate"
+  state.Submit = "Update"
   state.select = false;
   const edit: any = await $fetch('http://localhost:3001/book/' + bookId)
   state.data.book_name = edit.book_name;
