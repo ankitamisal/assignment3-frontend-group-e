@@ -19,5 +19,6 @@
     "@vueuse/core": "^9.1.0",
     "vee-validate": "^4.6.6",
     "vuelidate": "^0.7.7"
+
   }
 }
