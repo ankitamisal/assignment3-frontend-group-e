@@ -6,7 +6,10 @@
     <!-- <div class="grid grid-cols-2"> -->
     <div class="border-black border-2 m-8 p-8">
       <!-- @submit="onFormSubmit1()" -->
-      <form class="bg-green-100 border-green-400 rounded-lg border-2 px-12">
+      <form
+        @submit.prevent="onFormSubmit1()"
+        class="bg-green-100 border-green-400 rounded-lg border-2 px-12"
+      >
         <table>
           <h2 class="text-teal-900 text-xl font-bold pt-6">“Add Product”</h2>
           <hr />
@@ -19,7 +22,21 @@
             id="ProductName"
             name="ProductName"
             placeholder=""
-          /><br /><br />
+          />
+          <!-- <span
+            v-for="error in v$.productName.$errors"
+            :key="error.$uid"
+            class="text-red-700"
+            >{{ error.$messages }}</span
+          > -->
+          <span
+            v-for="error in v$.productName.$errors"
+            :key="error.$uid"
+            class="text-red-900"
+            >{{ error.$message }}
+          </span>
+
+          <br /><br />
           <label for="Price">Price:</label
           ><br />
           <input
@@ -29,7 +46,13 @@
             id="Price"
             name="Price"
             placeholder=""
-          /><br /><br />
+          />
+          <span
+            v-for="error in v$.price.$errors"
+            :key="error.$uid"
+            class="text-red-900"
+            >{{ error.$message }} </span
+          ><br /><br />
           <label for="Stock">Stock:</label>
           <select
             v-model="mydata.product.stock"
@@ -39,7 +62,13 @@
             ref="stock"
           >
             <option value="Available" selected>Available</option>
-            <option value="OutOfStock">Out of Stock</option></select
+            <option value="OutOfStock">Out of Stock</option>
+          </select>
+          <span
+            v-for="error in v$.stock.$errors"
+            :key="error.$uid"
+            class="text-red-900"
+            >{{ error.$message }} </span
           ><br /><br />
           <label for="Size">Size:</label>
           <select
@@ -53,7 +82,13 @@
             <option value="S">S</option>
             <option value="M" selected>M</option>
             <option value="L">L</option>
-            <option value="XL">XL</option></select
+            <option value="XL">XL</option>
+          </select>
+          <span
+            v-for="error in v$.size.$errors"
+            :key="error.$uid"
+            class="text-red-900"
+            >{{ error.$message }} </span
           ><br /><br />
           <label for="Image">Upload Image</label
           ><br /><br />
@@ -61,11 +96,11 @@
           <div class="mt-10">
             <button
               class="py-1 px-5 mr-5 bg-black hover:bg-blue-400 text-white font-bold text-center rounded-md mb-3"
-              type="button"
-              @click="onFormSubmit1()"
+              type="submit"
             >
               Add Product
             </button>
+            <!-- \@click="onFormSubmit1()" -->
             <button
               class="py-1 px-5 bg-black hover:bg-blue-400 text-white font-bold text-center rounded-md mb-3"
               type="reset"
@@ -74,6 +109,9 @@
             </button>
           </div>
         </table>
+        <span v-for="error in v$.$errors" :key="error.$uid"
+          >{{ error.$property }}----{{ error.$message }}</span
+        >
       </form>
     </div>
     <div class="border-black border-2 m-8 p-8">
@@ -117,6 +155,7 @@
               Delete
             </button>
             <button
+              type="submit"
               class="mx-3 rounded-lg bg-green-600 hover:bg-green-600 text-white w-20"
               @click="editProduct(item.id)"
             >
@@ -131,6 +170,47 @@
   </div>
 </template>
 <script setup lang="ts">
+//////////////////////////////////////////////validation//////////////////////////////////////
+//import useVuelidate, { required, email } from "~/utils/vuelidate/useVuelidate";
+//import useVuelidate, { required, email } from "../utils/vuelidate/useVuelidate";
+import useVuelidate from "@vuelidate/core";
+import { maxLength, minLength, required } from "@vuelidate/validators";
+// const state = reactive({
+//   form: {
+//     productName: "",
+//     password: "",
+//   },
+// });
+
+// /**
+//  * validation rules
+//  */
+// const rules = {
+//   productName: { required },
+//   //password: { required },
+// };
+// const v$ = useVuelidate(rules, state.form);
+
+// /**
+//  * login
+//  *
+//  * @returns {Promise<void>}
+//  */
+// async function login(): Promise<void> {
+//   const isFormCorrect = await v$.value.$validate();
+//   if (!isFormCorrect) {
+//     // Show error messages
+//     alert("valid valid FirstName");
+
+//     console.log("please enter data in valid formate");
+//     return;
+//   }
+
+//   //     const payload = { ...state.form };
+//   // Call API with payload
+// }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 // import { ref } from "vue";
 // const productName = ref("");
 // const price = ref("");
@@ -154,7 +234,52 @@ const mydata = reactive({
     // emp_dept: '',
   },
 });
+// const rules = {
+//   productName: { required },
+//   price: { required },
+//   stock: { required },
+//   size: { required },
+//   //   //password: { required },
+// };
+const rules = computed(() => {
+  return {
+    productName: {
+      required,
+      minLenght: minLength(5),
+      maxLength: maxLength(15),
+    },
+    price: { required, maxLength: maxLength(9) },
+    stock: { required },
+    size: { required },
+  };
 
+  //   //password: { required },
+});
+
+const v$ = useVuelidate(rules, mydata.product);
+//const v$ = useVuelidate(rules, mydata.product );
+
+/**
+ * login
+ *
+ *
+//  */
+// async function login(): Promise<void> {
+//   const isFormCorrect = await v$.value.$validate();
+//   if (!isFormCorrect) {
+//     // Show error messages
+//     alert("valid valid FirstName");
+
+//     console.log("please enter data in valid formate");
+//     return;
+//   }
+
+//     const payload = { ...state.form };
+// Call API with payload
+// }
+// const a = async () => {
+//   const result = await v$.validate;
+// };
 getProductAPI();
 
 // GET API
@@ -162,35 +287,59 @@ async function getProductAPI() {
   mydata.allProduct = await $fetch("http://localhost:8080/product/allData");
 }
 
-// POST API
+//POST API
 async function onFormSubmit1() {
   console.log(mydata.product);
-
+  const result = await v$.value.$validate();
+  if (result) {
+    alert("product created");
+  } else {
+    alert("product not created");
+  }
   await $fetch("http://localhost:8080/product", {
     method: "POST",
     body: JSON.stringify(mydata.product),
   });
+
   getProductAPI();
 }
+// async function onFormSubmit1() {
+//   const result = await v$.value.$validate();
+//   if (isEdit === true) {
+//     await $fetch("http://localhost:8080/product/" + id,  {
+//       method: "PUT",
+//       body: mydata.Book,
+//     });
+//     isEdit = false;
+//     getBookAPI();
+//   } else {
+//     if (result) {
+//       await $fetch("http://localhost:8080/product", {
+//         method: "POST",
+//         body: mydata.Book,
+//       });
+//       getUserApi();
+//     }
+//   }
 // // PATCH API
 
-let edit = mydata.product;
-async function onClickOfEditProduct(id) {
-  const sampleData = {
-    id: id,
-    productName: "Shaktiman" + id,
-    price: "ankita" + mydata.allProduct.length,
-    stock: 200 + mydata.allProduct.length,
-    size: "ghjgj" + mydata.allProduct.length,
-    image: "91001" + mydata.allProduct.length,
-  };
-  // const response = await $fetch('http://localhost:8080/product/' + id, {
-  //     method: 'PATCH',
-  //     body: JSON.stringify(sampleData),
-  // });
-  // getBookAPI();
-  getProductAPI();
-}
+// let edit = mydata.product;
+// async function onClickOfEditProduct(id) {
+//   const sampleData = {
+//     id: id,
+//     productName: "Shaktiman" + id,
+//     price: "ankita" + mydata.allProduct.length,
+//     stock: 200 + mydata.allProduct.length,
+//     size: "ghjgj" + mydata.allProduct.length,
+//     image: "91001" + mydata.allProduct.length,
+//   };
+// const response = await $fetch('http://localhost:8080/product/' + id, {
+//     method: 'PATCH',
+//     body: JSON.stringify(sampleData),
+// });
+// getBookAPI();
+//   getProductAPI();
+// }
 async function editProduct(id) {
   console.log("top console from patch api");
   let productEdit = mydata.allProduct.filter((product) => {
@@ -209,7 +358,9 @@ async function editProduct(id) {
     method: "PATCH",
     body: JSON.stringify(mydata.product),
   });
+  getProductAPI();
 }
+getProductAPI();
 // // Delete API
 async function onDeleteOfProduct(id) {
   await $fetch("http://localhost:8080/product/" + id, {
