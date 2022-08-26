@@ -1,5 +1,5 @@
 <template>
-  <main class="flex justify-center w-full h-screen ">
+  <main class="flex justify-center w-full h-screen">
     <div>
       <form method="post" class="border-black rounded-lg border-2 px-12">
         <table>
@@ -318,8 +318,7 @@ async function onSubmitForm() {
       body: JSON.stringify(sampleData),
     });
     alert("data Added successfully...");
-  }
-  else {
+  } else {
     putData();
     alert("data updated Successfully...");
     State.Submit = "Submit";
