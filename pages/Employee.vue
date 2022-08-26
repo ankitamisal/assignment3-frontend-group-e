@@ -1,28 +1,46 @@
 <template>
+
     <main class="flex justify-center w-full h-screen">
         <div>
-            <form class="bg-gray-100 border-black rounded-lg border-2 px-12" method="post">
+
+            <form class=" bg-gray-100 border-black rounded-lg border-2 px-12" method="post" @submit.prevent="Submit">
                 <table>
                     <h2 class="text-teal-900 text-xl font-bold pt-6">Employee Management </h2>
                     <hr />
                     <br />
-                    <label class="pt-10 py-10" for="book-name">Emp_FirstName:</label><br />
-                    <input type="text" id="book-name" name="emp_name" ref="emp-name" v-model="empp.mylist.Emp_FirstName"
-                        placeholder="Enter your First name" /><br /><br />
+                    <label class="pt-10 py-10" for="emp-name">Emp_FlirstName:</label><br />
+                    <input type="text" id="emp-name" name="emp_name" v-model="data.Emp_FirstName">
+                    <span v-for="error in v$.Emp_FirstName.$errors" :key="error.$uid" class="text-red-300"><br />
+                        {{ error.$message }}
+                    </span>
+                    <br />
                     <label for="emp-lname">Emp_LastName:</label><br />
                     <input type="text" id="emp-lname" name="emp-lname" placeholder="Enter last name"
-                        v-model="empp.mylist.Emp_LastName" /><br /><br />
+                        v-model="data.Emp_LastName" />
+                    <br />
+                    <span v-for="error in v$.Emp_LastName.$errors" :key="error.$uid" class="text-red-300">
+                        {{ error.$message }}
+                    </span>
+                    <br />
                     <label for="emp-email">Emp_Email: </label><br />
                     <input type="text" id="emp-email" name="emp-email" placeholder="Enter your email"
-                        v-model="empp.mylist.Emp_Email" />
-                    <br /><br />
+                        v-model="data.Emp_Email" />
+                    <br />
+                    <span v-for="error in v$.Emp_Email.$errors" :key="error.$uid" class="text-red-300">
+                        {{ error.$message }}
+                    </span><br />
                     <label for="emp-address">Emp_Add: </label><br />
-                    <input type="text" id="emp-address" name="emp-address" v-model="empp.mylist.Emp_Add"
+                    <input type="text" id="emp-address" name="emp-address" v-model="data.Emp_Add"
                         placeholder="Enter your Addres" />
-                    <br /><br />
+                    <br />
+                    <span v-for="error in v$.Emp_Add.$errors" :key="error.$uid" class="text-red-300">
+                        {{ error.$message }}
+                    </span>
+                    <br />
                     <label for="emp-gender">Emp_Gender: </label><br />
                     <input type="text" id="emp-gender" name="emp-gender" placeholder="Enter your Gender"
-                        v-model="empp.mylist.Emp_Gender" />
+                        v-model="data.Emp_Gender" />
+
                     <br /><br />
                     <!-- <label for="employee-image">Emp_profile: </label><br />
                     <input type="file" id="book-image" name="employee-image" /> -->
@@ -30,9 +48,12 @@
                     <div>
                         <button
                             class="py-1 px-5 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
-                            type="button" @click="Submit()">
+                            type="button" @click="Submit">
                             Submit
+                            {{ empp.Submit }}
                         </button>
+
+
                         <button
                             class="py-1 px-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
                             type="reset">
@@ -93,51 +114,74 @@
         </div>
     </main>
 </template>
-
 <script setup lang="ts">
-const { data: count } = await useFetch('http://localhost:8080/Employeee/')
+import useVuelidate, {
+    required, minLength, email
+} from '~/utlis/vuelidate/useVuelidate';
+import { computed, reactive } from 'vue'
+const { data: count } = await useFetch('http://localhost:3001/Employeee/')
 let emp: any = count;
-
 let empp = reactive({
     allEmp: [],
-    mylist: {
-        id: null,
-        Emp_FirstName: "",
-        Emp_LastName: "",
-        Emp_Gender: "",
-        Emp_Email: "",
-        Emp_Add: "",
-        //Emp_profile: "",
-    },
+    select: true,
+    Submit: '',
+    id: ""
 });
+let data = reactive({
+    id: null,
+    Emp_FirstName: '',
+    Emp_LastName: '',
+    Emp_Email: '',
+    Emp_Add: '',
+    Emp_Gender: '',
 
-
+});
+const rules = computed(() => {
+    return {
+        //  id: null,
+        Emp_FirstName: { required, minLength: minLength(4) },
+        Emp_LastName: { required },
+        Emp_Email: { required, email },
+        Emp_Add: { required },
+        Emp_Gender: { required },
+    }
+});
+const v$ = useVuelidate(rules, data);
 getApi();
 
+
+
 async function getApi() {
-    empp.allEmp = await $fetch('http://localhost:8080/Employeee');
+    empp.allEmp = await $fetch('http://localhost:3001/Employeee');
 }
 //create new employee
 // POST API
 async function Submit() {
+    //  alert('hrll')
+    const result = await v$.value.$validate()
 
-    // const sampleData = {
-    //     "id": empp.allEmp.length,
-    //     "Emp_FirstName": "sai" + empp.allEmp.length,
-    //     "Emp_LastName": "ankita" + empp.allEmp.length,
-    //     "Emp_Email": "manki@fg.com" + empp.allEmp.length,
-    //     "Emp_Add": "pund" + empp.allEmp.length,
-    //     "Emp_Gender": "M" + empp.allEmp.length,
-    //     "Emp_profile": "" + empp.allEmp.length,
+    event.preventDefault();
+    if (empp.select === true) {
+        const response = await $fetch('http://localhost:3001/Employeee/', {
+            method: 'POST',
+            body: data
+        });
 
+        alert('form subbmitted successfully')
 
-    // };
-    await $fetch('http://localhost:8080/Employeee/', {
-        method: 'POST',
-        body: (empp.mylist),
-    });
+    }
+    else {
+        putData();
+        alert('data updated...yahhhhhhhh')
+        empp.Submit = "Submit";
+    }
+    // await $fetch('http://localhost:3001/Employeee/', {
+    //     method: 'POST',
+    //     body: data
+    // });
     getApi();
 }
+
 // PATCH API
 async function onEdit(id: number) {
     // const sampleData = {
@@ -150,19 +194,38 @@ async function onEdit(id: number) {
     //     "Emp_profile": "" + empp.allEmp.length,
 
     // };
-    const response = await $fetch('http://localhost:8080/Employeee/' + id,
+    empp.Submit = "Update";
+    empp.select = false;
+    const editEmp: any = await $fetch('http://localhost:3001/Employeee/' + id,);
+    data.id = editEmp.id;
+    //let empEdit = empp.allEmp.filter((employ) => {
+    // if (employ.id == id) {
+    data.id = editEmp.id;
+    data.Emp_FirstName = editEmp.Emp_FirstName;
+    data.Emp_LastName = editEmp.Emp_LastName;
+    data.Emp_Email = editEmp.Emp_Email;
+    data.Emp_Add = editEmp.Emp_Add;
+    data.Emp_Gender = editEmp.Emp_Gender;
+    //return employ;
+}
+// });
+// console.log(empEdit);
+async function putData() {
+    const id = data.id;
+
+    const response = await $fetch('http://localhost:3001/Employeee/' + id,
         {
             method: "PATCH",
-            body: (empp.mylist),
+            body: data,
         }
     );
     getApi();
 }
 // Delete API
 async function onDelete(id: number) {
-    await $fetch('http://localhost:8080/Employeee/' + id, {
+    await $fetch('http://localhost:3001/Employeee/' + id, {
         method: 'DELETE'
-    });
+    })
     getApi();
 }
 </script>
