@@ -9,22 +9,32 @@
           <br />
           <label class="pt-10 py-10" for="book-name">Book name:</label><br />
           <input type="text" id="book-name" name="book-name" v-model="state.data.book_name"
-            placeholder="Enter your Book name" /><br /><br />
+            placeholder="Enter your Book name" />
+          <span v-for="error in v$.book_name.$errors" :key="error.$uid" class=" text-red-700">{{ error.$message
+          }}</span>
+          <br /><br />
+
           <label for="book-price">Book price:</label><br />
-          <input type="text" id="book-price" name="book-price" v-model="state.data.price"
-            placeholder="Enter Book price" /><br /><br />
+          <input type="number" id="book-price" name="book-price" v-model="state.data.price"
+            placeholder="Enter Book price" />
+          <span v-for="error in v$.price.$errors" :key="error.$uid" class=" text-red-700">{{ error.$message
+          }}</span>
+          <br /><br />
           <label for="book-author">Book Author: </label><br />
           <input type="text" id="book-author" name="address" v-model="state.data.author"
             placeholder="Enter your Aouther" />
+          <span v-for="error in v$.author.$errors" :key="error.$uid" class=" text-red-700">{{ error.$message
+          }}</span>
+
+
           <br /><br />
           <label for="book-number">Book Number: </label><br />
           <input type="number" id="book-number" name="book-number" v-model="state.data.book_number"
             placeholder="Enter your number" />
-          <br /><br />
-          <label for="book-image">Book Image: </label><br />
-          <input type="file" id="book-image" name="book-image" />
-          <br /><br />
+          <span v-for="error in v$.book_number.$errors" :key="error.$uid" class=" text-red-700">{{ error.$message
+          }}</span>
 
+          <br /><br />
           <div>
             <button
               class="py-1 px-5 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
@@ -44,6 +54,9 @@
         Get Data
       </button> -->
       <br />
+
+      <div>{{ state.errorBack }}</div>
+
       <table class="list">
         <thead>
           <tr>
@@ -80,6 +93,17 @@
     </div>
   </main>
 </template>
+
+<script lang="ts">
+import useVuelidate, {
+  required,
+  minLength,
+  alpha,
+  maxLength,
+} from '~/utils/vuelidate/useVuelidate';
+</script>
+
+
 <script setup lang="ts">
 let state = reactive({
   Submit: "Submit",
@@ -93,10 +117,36 @@ let state = reactive({
     book_number: "",
     book_image: "ghjgj",
 
-  }
+  },
+  errorBack: ''
 });
 
-getBookAPI();
+
+
+const rules = computed(() => {
+  return {
+    book_name: {
+      required,
+      alpha,
+      minLength: minLength(3),
+      maxLength: maxLength(35),
+    },
+    author: {
+      required,
+      alpha,
+      minLength: minLength(3),
+      maxLength: maxLength(35),
+    },
+    price: { required },
+    book_number: { required }
+  };
+});
+const v$ = useVuelidate(rules, state.data);
+
+
+
+
+// getBookAPI();
 
 // Calling Get API
 // function getBooks() {
@@ -109,6 +159,7 @@ getBookAPI();
 // GET API
 async function getBookAPI() {
   state.allBooks = await $fetch('http://localhost:3001/book');
+  state.allBooks
 }
 
 function clareData() {
@@ -129,29 +180,41 @@ function recet1() {
 
 // POST API
 async function onFormSubmit() {
+  console.log(state.select);
 
-  if (state.select === true) {
-    const sampleData = state.data;
-    const response = await $fetch('http://localhost:3001/book', {
-      method: 'POST',
-      body: JSON.stringify(sampleData),
-    });
+  const result = await v$.value.$validate();
+  if (result === true) {
 
-    getBookAPI();
-    clareData();
-    alert("Data added successfully:");
+    const { error: backError, data: posts } = await useFetch('http://localhost:3001/book', { method: 'POST', body: JSON.stringify(state.data) })
+
+    state.errorBack = backError;
 
 
-  } else {
-    let bookId = state.book_id;
-    putData(bookId);
-    alert(`data update successfully ${bookId}`);
-    clareData();
-    state.select = true;
+    if (state.select === true) {
+      const sampleData = state.data;
+      const response = await $fetch('http://localhost:3001/book', {
+        method: 'POST',
+        body: JSON.stringify(sampleData),
+      });
+
+      getBookAPI();
+      clareData();
+      alert("Data added successfully:");
+
+
+    } else {
+      let bookId = state.book_id;
+      putData(bookId);
+      alert(`data update successfully ${bookId}`);
+      clareData();
+      state.select = true;
+    }
   }
+
+  // PATCH API
+
 }
 
-// PATCH API
 async function onClickOfEditBook(bookId) {
   state.Submit = "Update"
   state.select = false;
@@ -161,20 +224,16 @@ async function onClickOfEditBook(bookId) {
   state.data.price = edit.price;
   state.data.book_image = state.data.book_image;
   state.data.book_number = edit.book_number;
-  state.book_id = edit.book_id
-
-
-
+  state.book_id = edit.book_id;
 }
 async function putData(bookId) {
+  state.Submit = "Submit";
+  state.select = true;
   const sample = state.data;
   const response = await $fetch('http://localhost:3001/book/' + bookId, {
     method: 'PATCH',
     body: JSON.stringify(sample),
   });
-  // alert('hii i am from put');
-  state.select = true;
-  state.Submit = "Submit";
   getBookAPI();
   clareData();
 }
@@ -191,6 +250,7 @@ async function onDeleteOfBook(bookId) {
     alert(`id ${bookId} was deleted`);
   }
 }
+
 </script>
 
 
