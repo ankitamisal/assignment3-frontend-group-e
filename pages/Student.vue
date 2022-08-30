@@ -80,6 +80,33 @@
             </div>
           </div>
           <br />
+          <div class="flex flex-wrap -mx-3 mb-2">
+            <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+              <label
+                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                for="Stud_gender"
+              >
+                Subjects
+              </label>
+
+              <select multiple
+                class="dropdown-toggle px-2 py-2 bg-gray-200 text-black font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-gray-200 hover:shadow-lg focus:bg-gray-200 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-200 active:shadow-lg active:text-black transition duration-150 ease-in-out flex items-center whitespace-nowrap"
+                name="department"
+              >
+                <option value="">Marathi</option>
+                <option value="Female">Hindi </option>
+                <option value="Male">English</option>
+                <option value="Female">History</option>
+              </select>
+              <!-- <span
+                v-for="error in v$.Gender.$errors"
+                :key="error.$uid"
+                class="text-red-500"
+                >{{ error.$message }}</span
+              > -->
+            </div>
+          </div>
+
           <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full px-3">
               <label
@@ -325,6 +352,8 @@ async function onSubmitForm() {
   }
   getStdAPI();
   clearData();
+
+  this.$nuxt.refresh();
 }
 // PATCH API
 async function onClickOfEditStudent(id) {
