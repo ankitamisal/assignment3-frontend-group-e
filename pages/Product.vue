@@ -32,7 +32,7 @@
           <span
             v-for="error in v$.productName.$errors"
             :key="error.$uid"
-            class="text-red-900"
+            class="text-red-600"
             >{{ error.$message }}
           </span>
 
@@ -50,7 +50,7 @@
           <span
             v-for="error in v$.price.$errors"
             :key="error.$uid"
-            class="text-red-900"
+            class="text-red-600"
             >{{ error.$message }} </span
           ><br /><br />
           <label for="Stock">Stock:</label>
@@ -67,7 +67,7 @@
           <span
             v-for="error in v$.stock.$errors"
             :key="error.$uid"
-            class="text-red-900"
+            class="text-red-600"
             >{{ error.$message }} </span
           ><br /><br />
           <label for="Size">Size:</label>
@@ -87,7 +87,7 @@
           <span
             v-for="error in v$.size.$errors"
             :key="error.$uid"
-            class="text-red-900"
+            class="text-red-600"
             >{{ error.$message }} </span
           ><br /><br />
           <label for="Image">Upload Image</label
@@ -165,8 +165,13 @@
         </tr>
       </table>
     </div>
-    <!-- </div> -->
-    <!-- <p>{{ allProduct }}</p> -->
+    <p>
+      {{ mydata.product.statusCode }}
+
+      <!-- </div> -->
+      <!-- <p>{{ allProduct }}</p> -->
+    </p>
+    <p>{{ message }}</p>
   </div>
 </template>
 <script setup lang="ts">
@@ -288,21 +293,47 @@ async function getProductAPI() {
 }
 
 //POST API
+// async function onFormSubmit1() {
+//   console.log(mydata.product);
+//   const result = await v$.value.$validate();
+//   if (result) {
+//     alert("product created");
+//   } else {
+//     alert("product not created");
+//   }
+//   await $fetch("http://localhost:8080/product", {
+//     method: "POST",
+//     body: JSON.stringify(mydata.product),
+//   });
+
+//   getProductAPI();
+// }
+
 async function onFormSubmit1() {
-  console.log(mydata.product);
-  const result = await v$.value.$validate();
-  if (result) {
-    alert("product created");
-  } else {
-    alert("product not created");
+  try {
+    console.log(mydata.product);
+    const result = await v$.value.$validate();
+    if (result) {
+      alert("product created");
+    } else {
+      alert("product not created");
+    }
+    await $fetch("http://localhost:8080/product", {
+      method: "POST",
+      body: JSON.stringify(mydata.product),
+    });
+    console.log("hiii amit");
+  } catch (err) {
+    // document.write();
+    console.log({
+      statusCode: 404,
+      message: "User not found",
+    });
   }
-  await $fetch("http://localhost:8080/product", {
-    method: "POST",
-    body: JSON.stringify(mydata.product),
-  });
 
   getProductAPI();
 }
+
 // async function onFormSubmit1() {
 //   const result = await v$.value.$validate();
 //   if (isEdit === true) {
