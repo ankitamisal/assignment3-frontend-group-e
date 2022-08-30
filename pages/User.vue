@@ -133,6 +133,7 @@
 import useVuelidate,{
     required,
     email,
+    alpha,
     minLength,
 
 } from "~/utils/vuelidate/useVuelidate";
@@ -168,7 +169,7 @@ let sampleData=reactive({
 const rules= computed(()=>{
     return{
     name: {
-        required,
+        required, alpha,
         minLength:minLength(3)
     },
     Email: {
@@ -176,63 +177,22 @@ const rules= computed(()=>{
         email
     },
     State: {
-        required,
+        required, alpha
     },
     Image: {
-        required
+        required, alpha
     }
     }
 });
 
 const v$ = useVuelidate(rules, state.user);
 
-// let info = {
-
-//     name: "",
-//     Email: "",
-//     State: "",
-//     Image: ""
-// };
-
-// const rules = computed(() => {
-//         return {
-
-//             name: {
-//                 required
-//             },
-//             Email: {
-//                 required,
-//                 email
-//             },
-//             State: {
-//                 required
-//             },
-//             Image: {
-//                 required
-//             }
-
-//         }
-//     }),
-
-// async function login(): Promise < void > {
-//         const isUSerCorrect = await v$.value.$validate();
-//         if (!isUserCorrect) {
-
-//             return {
-//                 state,
-//                 v$
-//             }
-//         }
-//         const payload = {
-//             ...state.form
-//         };
-
 getuserAPI();
 // Calling Get API
 function getuser() {
     getuserAPI().then((sampleData: any) => {
         state.allusers = sampleData;
-    });
+    }); 
 }
 // GET API
 async function getuserAPI() {
@@ -241,11 +201,15 @@ async function getuserAPI() {
 // POST API
 async function onFormSubmit() {
       const result=await v$.value.$validate();
-      // event.preventDefault()
+      event.preventDefault()
       if(result==true){
             alert('Allrigt..! We got your details.')
-        } else {
+        }
+        if(result==false) {
             alert('Somthing went wrong, please check your form details.')
+        }
+        else{
+          alert('Allrigt..! We got your details.')
         }
     
     //const user = state.user;
@@ -260,6 +224,7 @@ async function onFormSubmit() {
     
     }else{
         putData();
+        state.onFormSubmit="submit";
     }
 
 }
