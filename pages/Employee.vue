@@ -1,5 +1,4 @@
 <template>
-
     <main class="flex justify-center w-full h-screen">
         <div>
 
@@ -37,9 +36,32 @@
                         {{ error.$message }}
                     </span>
                     <br />
-                    <label for="emp-gender">Emp_Gender: </label><br />
-                    <input type="text" id="emp-gender" name="emp-gender" placeholder="Enter your Gender"
-                        v-model="data.Emp_Gender" />
+                    <select
+                        class="dropdown-toggle px-2 py-2 bg-gray-200 text-black font-medium text-xs uppercase rounde"
+                        name="gender" v-model="data.Emp_Gender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <span v-for="error in v$.Emp_Gender.$errors" :key="error.$uid" class="text-red-500">{{
+                            error.$message
+                    }}</span>
+
+                    <br /><br />
+                    <label for="">Department </label><br />
+                    <select
+                        class="dropdown-toggle px-2 py-2 bg-gray-200 text-black font-medium text-xs uppercase rounde"
+                        multiple name="department" v-model="data.department">
+                        <option value="IT">IT</option>
+                        <option value="NETWORK">NETWORK</option>
+                    </select>
+                    <!-- <span v-for="error in v$.department.$errors" :key="error.$uid" class="text-red-500">{{
+                            error.$message
+                    }}</span> -->
+
+                    <br /><br />
+                    <label for="emp-mobnumber">Emp_MobNumber: </label><br />
+                    <input type="text" id="emp-mobnumber" name="emp-mobnumber" placeholder="Enter your number"
+                        v-model="data.Emp_MobNumber" />
 
                     <br /><br />
                     <!-- <label for="employee-image">Emp_profile: </label><br />
@@ -78,6 +100,8 @@
                     <th class="px-4 border-black rounded-lg border-2">Emp_Email</th>
                     <th class="px-4 border-black rounded-lg border-2">Emp_Add</th>
                     <th class="px-4 border-black rounded-lg border-2">Emp_Gender</th>
+                    <th class="px-4 border-black rounded-lg border-2">Emp_MobNumber</th>
+
                     <!-- <th class="px-4 border-black rounded-lg border-2">Emp_profile</th> -->
                     <th class="px-4 border-black rounded-lg border-2">Action</th>
                 </tr>
@@ -100,6 +124,9 @@
                     </td>
                     <td class="px-4 border-black rounded-lg border-2">
                         {{ item.Emp_Gender }}
+                    </td>
+                    <td class="px-4 border-black rounded-lg border-2">
+                        {{ item.Emp_MobNumber }}
                     </td>
                     <!-- <td class="px-4 border-black rounded-lg border-2">
                         <img src="" alt="not found" style="width:100px;height:100px">{{ item.Emp_profile }}
@@ -134,7 +161,8 @@ let data = reactive({
     Emp_Email: '',
     Emp_Add: '',
     Emp_Gender: '',
-
+    Emp_MobNumber: '',
+    department: ''
 });
 const rules = computed(() => {
     return {
@@ -144,13 +172,11 @@ const rules = computed(() => {
         Emp_Email: { required, email },
         Emp_Add: { required },
         Emp_Gender: { required },
+        Emp_MobNumber: { required },
     }
 });
 const v$ = useVuelidate(rules, data);
 getApi();
-
-
-
 async function getApi() {
     empp.allEmp = await $fetch('http://localhost:3001/Employeee');
 }
@@ -159,16 +185,13 @@ async function getApi() {
 async function Submit() {
     //  alert('hrll')
     const result = await v$.value.$validate()
-
     event.preventDefault();
     if (empp.select === true) {
         const response = await $fetch('http://localhost:3001/Employeee/', {
             method: 'POST',
             body: data
         });
-
         alert('form subbmitted successfully')
-
     }
     else {
         putData();
@@ -181,7 +204,6 @@ async function Submit() {
     // });
     getApi();
 }
-
 // PATCH API
 async function onEdit(id: number) {
     // const sampleData = {
@@ -192,7 +214,6 @@ async function onEdit(id: number) {
     //     "Emp_Add": "ghjgj" + empp.allEmp.length,
     //     "Emp_Gender": "M" + empp.allEmp.length,
     //     "Emp_profile": "" + empp.allEmp.length,
-
     // };
     empp.Submit = "Update";
     empp.select = false;
@@ -212,7 +233,6 @@ async function onEdit(id: number) {
 // console.log(empEdit);
 async function putData() {
     const id = data.id;
-
     const response = await $fetch('http://localhost:3001/Employeee/' + id,
         {
             method: "PATCH",
