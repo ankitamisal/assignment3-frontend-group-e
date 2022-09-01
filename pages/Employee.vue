@@ -150,7 +150,6 @@ const v$ = useVuelidate(rules, data);
 getApi();
 
 
-
 async function getApi() {
     empp.allEmp = await $fetch('http://localhost:3001/Employeee');
 }
