@@ -89,17 +89,22 @@
           <th class="px-4 border-black rounded-lg border-2">Email</th>
           <th class="px-4 border-black rounded-lg border-2">State</th>
           <th class="px-4 border-black rounded-lg border-2">Image</th>
+          <th class="px-4 border-black rounded-lg border-2">Action</th>
           <!-- <td class="px-4 border-black rounded-lg border-2">createdAt</td> -->
         </tr>
         <tr v-for="(item, index) in state.allusers" :key="item">
           <!-- <td class="px-4 border-black rounded-lg border-2">{{item.id=i+1}}</td> -->
-          <td class="px-4 border-black rounded-lg border-2">{{ item.id }}</td>
-          <td class="px-4 border-black rounded-lg border-2">{{ item.name }}</td>
           <td class="px-4 border-black rounded-lg border-2">
-            {{ item.State }}
+          {{ item.id }}</td>
+          <td class="px-4 border-black rounded-lg border-2">
+          {{ item.name }}</td>
+          <td class="px-4 border-black rounded-lg border-2">
+          {{ item.Email }}</td>
+          <td class="px-4 border-black rounded-lg border-2">
+          {{ item.State }}
           </td>
           <td class="px-4 border-black rounded-lg border-2">
-            {{ item.Image }}
+          {{ item.Image }}
           </td>
           <!--  <td class="px-4 border-black rounded-lg border-2">
             {{ item.createdAt }}
@@ -128,6 +133,7 @@
 import useVuelidate,{
     required,
     email,
+    alpha,
     minLength,
 
 } from "~/utils/vuelidate/useVuelidate";
@@ -142,6 +148,7 @@ import {computed,reactive} from 'vue';
 let state = reactive({
     allusers: [],
     edit : true,
+    submit:'',
    id: '',
     user: {
 
@@ -162,7 +169,7 @@ let sampleData=reactive({
 const rules= computed(()=>{
     return{
     name: {
-        required,
+        required, alpha,
         minLength:minLength(3)
     },
     Email: {
@@ -170,63 +177,22 @@ const rules= computed(()=>{
         email
     },
     State: {
-        required,
+        required, alpha
     },
     Image: {
-        required
+        required, alpha
     }
     }
 });
 
 const v$ = useVuelidate(rules, state.user);
 
-// let info = {
-
-//     name: "",
-//     Email: "",
-//     State: "",
-//     Image: ""
-// };
-
-// const rules = computed(() => {
-//         return {
-
-//             name: {
-//                 required
-//             },
-//             Email: {
-//                 required,
-//                 email
-//             },
-//             State: {
-//                 required
-//             },
-//             Image: {
-//                 required
-//             }
-
-//         }
-//     }),
-
-// async function login(): Promise < void > {
-//         const isUSerCorrect = await v$.value.$validate();
-//         if (!isUserCorrect) {
-
-//             return {
-//                 state,
-//                 v$
-//             }
-//         }
-//         const payload = {
-//             ...state.form
-//         };
-
 getuserAPI();
 // Calling Get API
 function getuser() {
-    getuserAPI().then((data: any) => {
-        state.allusers = data;
-    });
+    getuserAPI().then((sampleData: any) => {
+        state.allusers = sampleData;
+    }); 
 }
 // GET API
 async function getuserAPI() {
@@ -235,17 +201,20 @@ async function getuserAPI() {
 // POST API
 async function onFormSubmit() {
       const result=await v$.value.$validate();
+      event.preventDefault()
       if(result==true){
-            alert('form succesffuly submited')
-        } else {
-            alert('form fail validation')
+            alert('Allrigt..! We got your details.')
+        }
+        if(result==false) {
+            alert('Somthing went wrong, please check your form details.')
+        }
+        else{
+          alert('Allrigt..! We got your details.')
         }
     
     //const user = state.user;
     if(state.edit===true)
     {
-
-    
     const response = await $fetch("http://localhost:3001/user/", {
         method: "POST",
          body: JSON.stringify(state.user),
@@ -255,6 +224,7 @@ async function onFormSubmit() {
     
     }else{
         putData();
+        state.onFormSubmit="submit";
     }
 
 }

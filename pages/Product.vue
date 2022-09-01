@@ -32,7 +32,7 @@
           <span
             v-for="error in v$.productName.$errors"
             :key="error.$uid"
-            class="text-red-900"
+            class="text-red-600"
             >{{ error.$message }}
           </span>
 
@@ -50,7 +50,7 @@
           <span
             v-for="error in v$.price.$errors"
             :key="error.$uid"
-            class="text-red-900"
+            class="text-red-600"
             >{{ error.$message }} </span
           ><br /><br />
           <label for="Stock">Stock:</label>
@@ -67,16 +67,17 @@
           <span
             v-for="error in v$.stock.$errors"
             :key="error.$uid"
-            class="text-red-900"
+            class="text-red-600"
             >{{ error.$message }} </span
           ><br /><br />
           <label for="Size">Size:</label>
           <select
-            v-model="mydata.product.size"
+            v-model="mydata.id"
             class="p-1"
             name="Size"
             id="Size"
             ref="size"
+            multiple
           >
             <!-- <option value="XS">XS</option> -->
             <option value="S">S</option>
@@ -84,12 +85,13 @@
             <option value="L">L</option>
             <option value="XL">XL</option>
           </select>
-          <span
+          <!-- <span
             v-for="error in v$.size.$errors"
             :key="error.$uid"
-            class="text-red-900"
-            >{{ error.$message }} </span
-          ><br /><br />
+            class="text-red-600"
+            >{{ error.$message }}
+          </span> -->
+          <br /><br />
           <label for="Image">Upload Image</label
           ><br /><br />
           <input type="file" id="Image" name="Image" /><br /><br />
@@ -114,6 +116,7 @@
         >
       </form>
     </div>
+
     <div class="border-black border-2 m-8 p-8">
       <table class="list">
         <tr>
@@ -165,8 +168,13 @@
         </tr>
       </table>
     </div>
-    <!-- </div> -->
-    <!-- <p>{{ allProduct }}</p> -->
+    <p>
+      {{ mydata.product.statusCode }}
+
+      <!-- </div> -->
+      <!-- <p>{{ allProduct }}</p> -->
+    </p>
+    <!-- <p>{{ message }}</p> -->
   </div>
 </template>
 <script setup lang="ts">
@@ -221,7 +229,6 @@ import { maxLength, minLength, required } from "@vuelidate/validators";
 // const emp_dept = ref("");
 
 // const productName =
-
 const mydata = reactive({
   allProduct: [],
   product: {
@@ -233,6 +240,8 @@ const mydata = reactive({
     // emp_salary: '',
     // emp_dept: '',
   },
+  sizes: [],
+  id: [],
 });
 // const rules = {
 //   productName: { required },
@@ -250,7 +259,7 @@ const rules = computed(() => {
     },
     price: { required, maxLength: maxLength(9) },
     stock: { required },
-    size: { required },
+    //size: { required },
   };
 
   //   //password: { required },
@@ -284,29 +293,65 @@ getProductAPI();
 
 // GET API
 async function getProductAPI() {
-  mydata.allProduct = await $fetch("http://localhost:8080/product/allData");
+  mydata.allProduct = await $fetch("http://localhost:3001/product/allData");
+}
+
+getSize();
+
+// GET API
+async function getSize() {
+  mydata.sizes = await $fetch("localhost:3001/size/allData");
 }
 
 //POST API
-async function onFormSubmit1() {
-  console.log(mydata.product);
-  const result = await v$.value.$validate();
-  if (result) {
-    alert("product created");
-  } else {
-    alert("product not created");
-  }
-  await $fetch("http://localhost:8080/product", {
-    method: "POST",
-    body: JSON.stringify(mydata.product),
-  });
+// async function onFormSubmit1() {
+//   console.log(mydata.product);
+//   const result = await v$.value.$validate();
+//   if (result) {
+//     alert("product created");
+//   } else {
+//     alert("product not created");
+//   }
+//   await $fetch("http://localhost:3001/product", {
+//     method: "POST",
+//     body: JSON.stringify(mydata.product),
+//   });
 
+//   getProductAPI();
+// }
+
+async function onFormSubmit1() {
+  try {
+    console.log(mydata.product);
+    const result = await v$.value.$validate();
+    if (result) {
+      alert("product created");
+    } else {
+      alert("product not created");
+    }
+    await $fetch("http://localhost:3001/product", {
+      method: "POST",
+      body: JSON.stringify(mydata.product),
+    }).then((res) => {
+      console.log("id", res.id);
+      id = res.id;
+      relationalTableValues();
+    });
+    console.log("hiii amit");
+  } catch (err) {
+    // document.write();
+    console.log({
+      statusCode: 404,
+      message: "User not found",
+    });
+  }
   getProductAPI();
 }
+
 // async function onFormSubmit1() {
 //   const result = await v$.value.$validate();
 //   if (isEdit === true) {
-//     await $fetch("http://localhost:8080/product/" + id,  {
+//     await $fetch("http://localhost:3001/product/" + id,  {
 //       method: "PUT",
 //       body: mydata.Book,
 //     });
@@ -314,7 +359,7 @@ async function onFormSubmit1() {
 //     getBookAPI();
 //   } else {
 //     if (result) {
-//       await $fetch("http://localhost:8080/product", {
+//       await $fetch("http://localhost:3001/product", {
 //         method: "POST",
 //         body: mydata.Book,
 //       });
@@ -333,7 +378,7 @@ async function onFormSubmit1() {
 //     size: "ghjgj" + mydata.allProduct.length,
 //     image: "91001" + mydata.allProduct.length,
 //   };
-// const response = await $fetch('http://localhost:8080/product/' + id, {
+// const response = await $fetch('http://localhost:3001/product/' + id, {
 //     method: 'PATCH',
 //     body: JSON.stringify(sampleData),
 // });
@@ -343,7 +388,7 @@ async function onFormSubmit1() {
 async function editProduct(id) {
   console.log("top console from patch api");
   let productEdit = mydata.allProduct.filter((product) => {
-    if ((product.id = id)) {
+    if (product.id == id) {
       mydata.product.id = product.id;
       mydata.product.productName = product.productName;
       mydata.product.price = product.price;
@@ -354,18 +399,36 @@ async function editProduct(id) {
     }
   });
   console.log(productEdit);
-  const response = await $fetch("http://localhost:8080/product/" + id, {
-    method: "PATCH",
-    body: JSON.stringify(mydata.product),
-  });
+  // const response = await $fetch("http://localhost:3001/product/" + id, {
+  //   method: "PATCH",
+  //   body: JSON.stringify(mydata.product),
+  // });
   getProductAPI();
 }
 getProductAPI();
 // // Delete API
 async function onDeleteOfProduct(id) {
-  await $fetch("http://localhost:8080/product/" + id, {
+  await $fetch("http://localhost:3001/product/" + id, {
     method: "DELETE",
   });
   getProductAPI();
+}
+
+async function relationalTableValues() {
+  console.log("studentId", id);
+  console.log(state.id);
+  state.id.forEach((subid) => {
+    const obj = {
+      product: id,
+      categories: id,
+    };
+    var response = $fetch("http://localhost:3001/size", {
+      method: "POST",
+      body: JSON.stringify(obj),
+    }).then((res) => {
+      console.log("data", obj);
+      // studId = res.student_id;
+    });
+  });
 }
 </script>
