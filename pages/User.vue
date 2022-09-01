@@ -16,7 +16,7 @@
             placeholder="Enter User name"
             :v="v$.name"
           />
-          <span class=" text-red-900" v-for="error in v$.name.$errors" :key="error.$uid"> {{ error.$message }}</span>
+          <p class=" text-red-900" v-for="error in v$.name.$errors" :key="error.$uid"> {{ error.$message }}</p>
           <br /><br />
 
           <label>Email :</label
@@ -29,7 +29,7 @@
             placeholder="Enter User Email"
             :v="v$.Email"
           />
-          <span v-if="v$.Email.$error"> {{ v$.Email.$error[0].$message }}</span>
+          <p v-if="v$.Email.$error"> {{ v$.Email.$error[0].$message }}</p>
           <br /><br />
           <label> State:</label
           ><br />
@@ -40,8 +40,18 @@
             name="state"
             placeholder="Enter your state"
           />
-          <span v-if="v$.State.$error"> {{ v$.State.$error[0].$message }}</span>
+          <p v-if="v$.State.$error"> {{ v$.State.$error[0].$message }}</p>
           <br /><br />
+
+          <select name="role" id="role" v-model="state.user.Role">
+          <option value="manager">Manager</option>
+          <option value="teamleader">Team Leader</option>
+          <option value="sde1">SDE1</option>
+          <option value="sde2">SDE2</option>
+          </select>
+          
+
+          <br/> <br/>
 
           <label>image </label
           ><br />
@@ -54,15 +64,7 @@
           />
           <span v-if="v$.Image.$error"> {{ v$.Image.$error[0].$message }}</span>
           <br /><br />
-          <!-- <label for="Image">createdAt </label
-          ><br />
-          <input
-            type="text"
-
-            id=""
-            name="image"
-            placeholder=""
-          /> -->
+       
           <br /><br />
           <div>
             <button
@@ -88,11 +90,12 @@
           <th class="px-4 border-black rounded-lg border-2">name</th>
           <th class="px-4 border-black rounded-lg border-2">Email</th>
           <th class="px-4 border-black rounded-lg border-2">State</th>
+          <th class="px-4 border-black rounded-lg border-2">Role</th>
           <th class="px-4 border-black rounded-lg border-2">Image</th>
           <th class="px-4 border-black rounded-lg border-2">Action</th>
           <!-- <td class="px-4 border-black rounded-lg border-2">createdAt</td> -->
         </tr>
-        <tr v-for="(item, index) in state.allusers" :key="item">
+        <tr v-for="(item) in state.allusers" :key="item">
           <!-- <td class="px-4 border-black rounded-lg border-2">{{item.id=i+1}}</td> -->
           <td class="px-4 border-black rounded-lg border-2">
           {{ item.id }}</td>
@@ -104,14 +107,17 @@
           {{ item.State }}
           </td>
           <td class="px-4 border-black rounded-lg border-2">
+          {{ item.Role }}
+          </td>
+          <td class="px-4 border-black rounded-lg border-2">
           {{ item.Image }}
           </td>
           <!--  <td class="px-4 border-black rounded-lg border-2">
             {{ item.createdAt }}
           </td> -->
-          <td>
+          <td class="px-4 border-black rounded-lg border-2">
             <button
-              class="mx-3 bg- rounded bg-blue-500 hover:bg-blue-700"
+              class="mx-3 bg- rounded border-black bg-blue-500 hover:bg-blue-700"
               @click="onDeleteOfuser(item.id)"
             >
               Delete
@@ -155,6 +161,7 @@ let state = reactive({
         name: "",
         Email: "",
         State: "",
+        Role: "",
         Image: ""
     },
 });
@@ -163,6 +170,7 @@ let sampleData=reactive({
         name: "",
         Email: "",
         State: "",
+        Role:"",
         Image: ""
 });
 
@@ -188,12 +196,6 @@ const rules= computed(()=>{
 const v$ = useVuelidate(rules, state.user);
 
 getuserAPI();
-// Calling Get API
-function getuser() {
-    getuserAPI().then((sampleData: any) => {
-        state.allusers = sampleData;
-    }); 
-}
 // GET API
 async function getuserAPI() {
     state.allusers = await $fetch("http://localhost:3001/user/");
@@ -208,10 +210,6 @@ async function onFormSubmit() {
         if(result==false) {
             alert('Somthing went wrong, please check your form details.')
         }
-        else{
-          alert('Allrigt..! We got your details.')
-        }
-    
     //const user = state.user;
     if(state.edit===true)
     {
@@ -224,20 +222,19 @@ async function onFormSubmit() {
     
     }else{
         putData();
-        state.onFormSubmit="submit";
     }
 
 }
 
 // get by ID
 async function onClickOfEdituser(id) {
-
     const edit = await $fetch("http://localhost:3001/user/" + id);
 
     state.id = edit.id;
     state.user.name = edit.name;
     state.user.Email = edit.Email;
     state.user.State = edit.State;
+    state.user.Role= edit.Role;
     state.user.Image = edit.Image;
     getuserAPI();
     state.edit=false;
@@ -251,15 +248,15 @@ async function putData() {
 
 
     });
-
-    state.user.edit=true;
-
+    state.edit=true;
 }
 //Delete API
 async function onDeleteOfuser(id) {
     await $fetch("http://localhost:3001/user/" + id, {
         method: "DELETE",
     });
+    alert("Are you sure you want to delete this data")
+    
     getuserAPI();
 
 }
