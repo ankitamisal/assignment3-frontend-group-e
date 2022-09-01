@@ -2,60 +2,68 @@
 <template>
   <main class="flex justify-center w-full h-screen">
     <div>
-      <form method="post" class="bg-gray-100 border-black rounded-lg border-2 px-12">
-        <table>
-          <h2 class="text-teal-900 text-xl font-bold pt-6">Book Management</h2>
-          <hr />
-          <br />
-          <label class="pt-10 py-10" for="book-name">Book name:</label><br />
-          <input type="text" id="book-name" name="book-name" v-model="state.data.book_name"
-            placeholder="Enter your Book name" />
-          <span v-for="error in v$.book_name.$errors" :key="error.$uid" class=" text-red-700">{{ error.$message
-          }}</span>
-          <br /><br />
+      <div id="from" style="display:none">
+        <form method="post" class="bg-gray-100 border-black rounded-lg border-2 px-12 ">
+          <table>
+            <h2 class="text-teal-900 text-xl font-bold pt-6">Book Management</h2>
+            <hr />
+            <br />
+            <label class="pt-10 py-10" for="book-name">Book name:</label><br />
+            <input type="text" id="book-name" name="book-name" v-model="state.data.book_name"
+              placeholder="Enter your Book name" />
+            <span v-for="error in v$.book_name.$errors" :key="error.$uid" class=" text-red-700">{{  error.$message 
+              }}</span>
+            <br /><br />
 
-          <label for="book-price">Book price:</label><br />
-          <input type="number" id="book-price" name="book-price" v-model="state.data.price"
-            placeholder="Enter Book price" />
-          <span v-for="error in v$.price.$errors" :key="error.$uid" class=" text-red-700">{{ error.$message
-          }}</span>
-          <br /><br />
-          <label for="book-author">Book Author: </label><br />
-          <input type="text" id="book-author" name="address" v-model="state.data.author"
-            placeholder="Enter your Aouther" />
-          <span v-for="error in v$.author.$errors" :key="error.$uid" class=" text-red-700">{{ error.$message
-          }}</span>
+            <label for="book-price">Book price:</label><br />
+            <input type="number" id="book-price" name="book-price" v-model="state.data.price"
+              placeholder="Enter Book price" />
+            <span v-for="error in v$.price.$errors" :key="error.$uid" class=" text-red-700">{{  error.$message 
+              }}</span>
+            <br /><br />
+            <label for="book-author">Book Author: </label><br />
+            <input type="text" id="book-author" name="address" v-model="state.data.author"
+              placeholder="Enter your Aouther" />
+            <span v-for="error in v$.author.$errors" :key="error.$uid" class=" text-red-700">{{  error.$message 
+              }}</span>
 
 
-          <br /><br />
-          <label for="book-number">Book Number: </label><br />
-          <input type="number" id="book-number" name="book-number" v-model="state.data.book_number"
-            placeholder="Enter your number" />
-          <span v-for="error in v$.book_number.$errors" :key="error.$uid" class=" text-red-700">{{ error.$message
-          }}</span>
+            <br /><br />
+            <label for="book-number">Book Number: </label><br />
+            <input type="number" id="book-number" name="book-number" v-model="state.data.book_number"
+              placeholder="Enter your number" />
+            <span v-for="error in v$.book_number.$errors" :key="error.$uid" class=" text-red-700">{{  error.$message 
+              }}</span>
 
-          <br /><br />
-          <div>
-            <button
-              class="py-1 px-5 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
-              type="button" @click="onFormSubmit()">
-              {{ state.Submit }}
-            </button>
+            <br /><br />
+            <label for="language">Select Language :</label>
+            <select name="language" id="language" v-model="state.Language" multiple>
+              <option disabled value=""> select language</option>
+              <option value="Marathi ">Marathi</option>
+              <option value="English">English</option>
+              <option value="Hindi">Hindi</option>
+            </select>
+            <div>
+              <button
+                class="py-1 px-5 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
+                type="button" @click="onFormSubmit()">
+                {{  state.Submit  }}
+              </button>
 
-            <button class="py-1 px-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
-              @click="recet1()">
-              Reset
-            </button>
-          </div>
-        </table>
-      </form>
+              <button class="py-1 px-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
+                @click="recet1()">
+                Reset
+              </button>
+            </div>
+          </table>
+        </form>
+      </div>
       <!-- <button class="py-1 px-5 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center rounded-md mb-3"
         type="submit" @click="getdata">
         Get Data
       </button> -->
-      <br />
-
-      <div>{{ state.errorBack }}</div>
+      <br /><button class=" m-auto hover:bg-green-600" @click="adddata()">Add Data</button>
+      <div>{{  state.errorBack  }}</div>
 
       <table class="list">
         <thead>
@@ -64,31 +72,33 @@
             <th class="px-4 border-black rounded-lg border-2">Book Name</th>
             <th class="px-4 border-black rounded-lg border-2">Book Price</th>
             <th class="px-4 border-black rounded-lg border-2">Book Author</th>
+            <th class="px-4 border-black rounded-lg border-2">Language</th>
             <th class="px-4 border-black rounded-lg border-2">Book Number</th>
-            <th class="px-4 border-black rounded-lg border-2">Book Image</th>
+            <!-- <th class="px-4 border-black rounded-lg border-2">Book Image</th> -->
             <th class="px-4 border-black rounded-lg border-2">Action</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) of state.allBooks" :key="item.id">
-            <td class="px-4 border-black rounded-lg border-2">{{ item.book_id }}</td>
-            <td class="px-4 border-black rounded-lg border-2">{{ item.book_name }}</td>
-            <td class="px-4 border-black rounded-lg border-2">{{ item.author }}</td>
-            <td class="px-4 border-black rounded-lg border-2">{{ item.price }}</td>
-            <td class="px-4 border-black rounded-lg border-2">{{ item.book_number }}</td>
-            <td class="px-4 border-black rounded-lg border-2">{{ item.book_image }}</td>
-            <td class="px-4 border-black rounded-lg border-2">{{ item.Action }}
-              <button class=" mx-3" @click="onDeleteOfBook(item.book_id)">
+            <td class="px-4 border-black rounded-lg border-2">{{  item.book_id  }}</td>
+            <td class="px-4 border-black rounded-lg border-2">{{  item.book_name  }}</td>
+            <td class="px-4 border-black rounded-lg border-2">{{  item.author  }}</td>
+            <td class="px-4 border-black rounded-lg border-2">{{  item.price  }}</td>
+            <td class="px-4 border-black rounded-lg border-2">{{  state.Language  }}</td>
+            <td class="px-4 border-black rounded-lg border-2">{{  item.book_number  }}</td>
+            <!-- <td class="px-4 border-black rounded-lg border-2">{{ item.book_image }}</td> -->
+            <td class="px-4 border-black rounded-lg border-2">{{  item.Action  }}
+              <button class="mx-3 hover:bg-red-600  " @click="onDeleteOfBook(item.book_id)">
                 Delete
               </button>
-              <button class="mx-3" @click="onClickOfEditBook(item.book_id)">
+              <button class="mx-3 hover:bg-green-600" @click="onClickOfEditBook(item.book_id)">
                 Edit
               </button>
             </td>
           </tr>
-
         </tbody>
       </table>
+
 
     </div>
   </main>
@@ -114,11 +124,12 @@ let state = reactive({
     book_name: "",
     author: "",
     price: "",
-    book_number: "",
-    book_image: "ghjgj",
+    book_number: ""
 
   },
-  errorBack: ''
+  errorBack: '',
+  Language: [],
+  getLanguage: {}
 });
 
 
@@ -143,10 +154,12 @@ const rules = computed(() => {
 });
 const v$ = useVuelidate(rules, state.data);
 
+function adddata() {
+  document.getElementById("from").style.display = "block";
+}
 
 
-
-// getBookAPI();
+getBookAPI();
 
 // Calling Get API
 // function getBooks() {
@@ -158,8 +171,12 @@ const v$ = useVuelidate(rules, state.data);
 
 // GET API
 async function getBookAPI() {
+  let res: any = await $fetch('http://localhost:3001/language');
+  state.Language = res;
+
+
   state.allBooks = await $fetch('http://localhost:3001/book');
-  state.allBooks
+
 }
 
 function clareData() {
@@ -167,7 +184,6 @@ function clareData() {
   state.data.book_name = "";
   state.data.author = "";
   state.data.price = "";
-  state.data.book_image = "";
   state.data.book_number = "";
   state.book_id = "";
 }
@@ -180,14 +196,16 @@ function recet1() {
 
 // POST API
 async function onFormSubmit() {
+  console.log(state.Language);
+
   console.log(state.select);
 
   const result = await v$.value.$validate();
   if (result === true) {
 
-    const { error: backError, data: posts } = await useFetch('http://localhost:3001/book', { method: 'POST', body: JSON.stringify(state.data) })
+    // const { error: backError, data: posts } = await useFetch('http://localhost:3001/book', { method: 'POST', body: JSON.stringify(state.data) })
 
-    state.errorBack = backError;
+    // state.errorBack = backError;
 
 
     if (state.select === true) {
@@ -197,9 +215,16 @@ async function onFormSubmit() {
         body: JSON.stringify(sampleData),
       });
 
+      let language = { Language: state.Language }
+      const respons = await $fetch('http://localhost:3001/language', {
+        method: 'POST',
+        body: JSON.stringify(language),
+      });
+
       getBookAPI();
       clareData();
       alert("Data added successfully:");
+      document.getElementById("from").style.display = "none";
 
 
     } else {
@@ -208,6 +233,8 @@ async function onFormSubmit() {
       alert(`data update successfully ${bookId}`);
       clareData();
       state.select = true;
+      getBookAPI();
+      document.getElementById("from").style.display = "none";
     }
   }
 
@@ -216,13 +243,14 @@ async function onFormSubmit() {
 }
 
 async function onClickOfEditBook(bookId) {
+  document.getElementById("from").style.display = "block";
+  location.href = "#from";
   state.Submit = "Update"
   state.select = false;
   const edit: any = await $fetch('http://localhost:3001/book/' + bookId)
   state.data.book_name = edit.book_name;
   state.data.author = edit.author;
   state.data.price = edit.price;
-  state.data.book_image = state.data.book_image;
   state.data.book_number = edit.book_number;
   state.book_id = edit.book_id;
 }
@@ -235,6 +263,7 @@ async function putData(bookId) {
     body: JSON.stringify(sample),
   });
   getBookAPI();
+  document.getElementById("from").style.display = "none";
   clareData();
 }
 
