@@ -8,7 +8,7 @@
       <!-- @submit="onFormSubmit1()" -->
       <form
         @submit.prevent="onFormSubmit1()"
-        class="bg-green-100 border-green-400 rounded-lg border-2 px-12"
+        class="bg-red-500 border-green-400 rounded-lg border-2 px-12"
       >
         <table>
           <h2 class="text-teal-900 text-xl font-bold pt-6">“Add Product”</h2>
@@ -71,7 +71,24 @@
             >{{ error.$message }} </span
           ><br /><br />
           <label for="Size">Size:</label>
+
+          <!-- <td> -->
           <select
+            v-model="mydata.id"
+            multiple="true"
+            @change="submitUserdataId(mydata.id)"
+            class="font-bold sm:w-52 p-2 rounded-md py-2 pr-4 ml-2 mb-2"
+          >
+            <option v-for="i in mydata.size" :key="i.id" :value="i.id">
+              {{ i.id }}.{{ i.size }}
+            </option>
+          </select>
+          {{
+            mydata.id
+          }}
+          <!-- </td> -->
+
+          <!-- <select
             v-model="mydata.id"
             class="p-1"
             name="Size"
@@ -79,12 +96,12 @@
             ref="size"
             multiple
           >
-            <!-- <option value="XS">XS</option> -->
+            
             <option value="S">S</option>
             <option value="M" selected>M</option>
             <option value="L">L</option>
             <option value="XL">XL</option>
-          </select>
+          </select> -->
           <!-- <span
             v-for="error in v$.size.$errors"
             :key="error.$uid"
@@ -175,6 +192,7 @@
       <!-- <p>{{ allProduct }}</p> -->
     </p>
     <!-- <p>{{ message }}</p> -->
+    <!-- {{ mydata.size }} -->
   </div>
 </template>
 <script setup lang="ts">
@@ -235,12 +253,12 @@ const mydata = reactive({
     productName: "",
     price: "",
     stock: "",
-    size: "",
+    //size: "",
     // emp_contact: '',
     // emp_salary: '',
     // emp_dept: '',
   },
-  sizes: [],
+  size: [],
   id: [],
 });
 // const rules = {
@@ -250,6 +268,8 @@ const mydata = reactive({
 //   size: { required },
 //   //   //password: { required },
 // };
+
+var productId;
 const rules = computed(() => {
   return {
     productName: {
@@ -274,55 +294,27 @@ const v$ = useVuelidate(rules, mydata.product);
  *
 //  */
 // async function login(): Promise<void> {
-//   const isFormCorrect = await v$.value.$validate();
-//   if (!isFormCorrect) {
-//     // Show error messages
-//     alert("valid valid FirstName");
 
-//     console.log("please enter data in valid formate");
-//     return;
-//   }
-
-//     const payload = { ...state.form };
-// Call API with payload
-// }
-// const a = async () => {
-//   const result = await v$.validate;
-// };
 getProductAPI();
 
 // GET API
 async function getProductAPI() {
   mydata.allProduct = await $fetch("http://localhost:3001/product/allData");
 }
-
+console.log(mydata.allProduct);
 getSize();
 
 // GET API
 async function getSize() {
-  mydata.sizes = await $fetch("localhost:3001/size/allData");
+  mydata.size = await $fetch("http://localhost:3001/size/allData");
+  //console.log(mydata.size);
 }
-
-//POST API
-// async function onFormSubmit1() {
-//   console.log(mydata.product);
-//   const result = await v$.value.$validate();
-//   if (result) {
-//     alert("product created");
-//   } else {
-//     alert("product not created");
-//   }
-//   await $fetch("http://localhost:3001/product", {
-//     method: "POST",
-//     body: JSON.stringify(mydata.product),
-//   });
-
-//   getProductAPI();
-// }
+console.log(getSize());
 
 async function onFormSubmit1() {
   try {
-    console.log(mydata.product);
+    //console.log(mydata.product);
+    //console.log(mydata.size);
     const result = await v$.value.$validate();
     if (result) {
       alert("product created");
@@ -334,8 +326,10 @@ async function onFormSubmit1() {
       body: JSON.stringify(mydata.product),
     }).then((res) => {
       console.log("id", res.id);
-      id = res.id;
-      relationalTableValues();
+      productId = res.id;
+      console.log("working line 344");
+      categoriesApi();
+      console.log("374 function working" + productId);
     });
     console.log("hiii amit");
   } catch (err) {
@@ -346,45 +340,9 @@ async function onFormSubmit1() {
     });
   }
   getProductAPI();
+  getSize();
 }
 
-// async function onFormSubmit1() {
-//   const result = await v$.value.$validate();
-//   if (isEdit === true) {
-//     await $fetch("http://localhost:3001/product/" + id,  {
-//       method: "PUT",
-//       body: mydata.Book,
-//     });
-//     isEdit = false;
-//     getBookAPI();
-//   } else {
-//     if (result) {
-//       await $fetch("http://localhost:3001/product", {
-//         method: "POST",
-//         body: mydata.Book,
-//       });
-//       getUserApi();
-//     }
-//   }
-// // PATCH API
-
-// let edit = mydata.product;
-// async function onClickOfEditProduct(id) {
-//   const sampleData = {
-//     id: id,
-//     productName: "Shaktiman" + id,
-//     price: "ankita" + mydata.allProduct.length,
-//     stock: 200 + mydata.allProduct.length,
-//     size: "ghjgj" + mydata.allProduct.length,
-//     image: "91001" + mydata.allProduct.length,
-//   };
-// const response = await $fetch('http://localhost:3001/product/' + id, {
-//     method: 'PATCH',
-//     body: JSON.stringify(sampleData),
-// });
-// getBookAPI();
-//   getProductAPI();
-// }
 async function editProduct(id) {
   console.log("top console from patch api");
   let productEdit = mydata.allProduct.filter((product) => {
@@ -414,15 +372,15 @@ async function onDeleteOfProduct(id) {
   getProductAPI();
 }
 
-async function relationalTableValues() {
-  console.log("studentId", id);
-  console.log(state.id);
-  state.id.forEach((subid) => {
+async function categoriesApi() {
+  console.log("product working line no 390", productId);
+  console.log(mydata.id);
+  mydata.id.forEach((product) => {
     const obj = {
-      product: id,
-      categories: id,
+      productPostId: productId,
+      productCategoryId: product,
     };
-    var response = $fetch("http://localhost:3001/size", {
+    var response = $fetch("http://localhost:3001/categories", {
       method: "POST",
       body: JSON.stringify(obj),
     }).then((res) => {
