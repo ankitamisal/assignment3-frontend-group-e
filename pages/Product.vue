@@ -8,10 +8,12 @@
       <!-- @submit="onFormSubmit1()" -->
       <form
         @submit.prevent="onFormSubmit1()"
-        class="bg-red-500 border-green-400 rounded-lg border-2 px-12"
+        class="bg-teal-600 border-green-400 rounded-lg border-2 px-12"
       >
         <table>
-          <h2 class="text-teal-900 text-xl font-bold pt-6">“Add Product”</h2>
+          <h2 class="text-black text-center text-xl font-bold pt-6">
+            Fill Form For Create Product
+          </h2>
           <hr />
           <label class="pt-10 py-10" for="ProductName">Product Name:</label
           ><br />
@@ -21,7 +23,8 @@
             ref="productName"
             id="ProductName"
             name="ProductName"
-            placeholder=""
+            placeholder="Enter Product Name"
+            class="rounded-md"
           />
           <!-- <span
             v-for="error in v$.productName.$errors"
@@ -200,7 +203,7 @@
 //import useVuelidate, { required, email } from "~/utils/vuelidate/useVuelidate";
 //import useVuelidate, { required, email } from "../utils/vuelidate/useVuelidate";
 import useVuelidate from "@vuelidate/core";
-import { maxLength, minLength, required } from "@vuelidate/validators";
+import { maxLength, minLength, required, alpha } from "@vuelidate/validators";
 // const state = reactive({
 //   form: {
 //     productName: "",
@@ -222,31 +225,9 @@ import { maxLength, minLength, required } from "@vuelidate/validators";
 //  *
 //  * @returns {Promise<void>}
 //  */
-// async function login(): Promise<void> {
-//   const isFormCorrect = await v$.value.$validate();
-//   if (!isFormCorrect) {
-//     // Show error messages
-//     alert("valid valid FirstName");
-
-//     console.log("please enter data in valid formate");
-//     return;
-//   }
-
-//   //     const payload = { ...state.form };
-//   // Call API with payload
-// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// import { ref } from "vue";
-// const productName = ref("");
-// const price = ref("");
-// const stock = ref("");
-// const size = ref("");
-// const emp_contact = ref("");
-// const emp_salary = ref("");
-// const emp_dept = ref("");
 
-// const productName =
 const mydata = reactive({
   allProduct: [],
   product: {
@@ -274,6 +255,8 @@ const rules = computed(() => {
   return {
     productName: {
       required,
+      alpha,
+
       minLenght: minLength(5),
       maxLength: maxLength(15),
     },
