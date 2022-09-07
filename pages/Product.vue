@@ -3,15 +3,28 @@
     <h1 class="font-bold text-center text-2xl mt-10 text-green-400">
       Product Management
     </h1>
+
+    <div class="px-7 text-red-500">
+      <ul>
+        <li v-for="(error, index) in mydata.serverErrors" :key="index">
+          {{ error }}
+        </li>
+      </ul>
+      <!-- <ul>
+        <li v-for="(error, index) in mydata.serverErrors" :key="index"></li>
+      </ul> -->
+    </div>
     <!-- <div class="grid grid-cols-2"> -->
     <div class="border-black border-2 m-8 p-8">
       <!-- @submit="onFormSubmit1()" -->
       <form
         @submit.prevent="onFormSubmit1()"
-        class="bg-red-500 border-green-400 rounded-lg border-2 px-12"
+        class="bg-teal-600 border-green-400 rounded-lg border-2 px-12"
       >
         <table>
-          <h2 class="text-teal-900 text-xl font-bold pt-6">“Add Product”</h2>
+          <h2 class="text-black text-center text-xl font-bold pt-6">
+            Fill Form For Create Product
+          </h2>
           <hr />
           <label class="pt-10 py-10" for="ProductName">Product Name:</label
           ><br />
@@ -21,7 +34,8 @@
             ref="productName"
             id="ProductName"
             name="ProductName"
-            placeholder=""
+            placeholder="Enter Product Name"
+            class="rounded-md"
           />
           <!-- <span
             v-for="error in v$.productName.$errors"
@@ -86,28 +100,7 @@
           {{
             mydata.id
           }}
-          <!-- </td> -->
 
-          <!-- <select
-            v-model="mydata.id"
-            class="p-1"
-            name="Size"
-            id="Size"
-            ref="size"
-            multiple
-          >
-            
-            <option value="S">S</option>
-            <option value="M" selected>M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-          </select> -->
-          <!-- <span
-            v-for="error in v$.size.$errors"
-            :key="error.$uid"
-            class="text-red-600"
-            >{{ error.$message }}
-          </span> -->
           <br /><br />
           <label for="Image">Upload Image</label
           ><br /><br />
@@ -185,14 +178,10 @@
         </tr>
       </table>
     </div>
+
     <p>
       {{ mydata.product.statusCode }}
-
-      <!-- </div> -->
-      <!-- <p>{{ allProduct }}</p> -->
     </p>
-    <!-- <p>{{ message }}</p> -->
-    <!-- {{ mydata.size }} -->
   </div>
 </template>
 <script setup lang="ts">
@@ -200,80 +189,29 @@
 //import useVuelidate, { required, email } from "~/utils/vuelidate/useVuelidate";
 //import useVuelidate, { required, email } from "../utils/vuelidate/useVuelidate";
 import useVuelidate from "@vuelidate/core";
-import { maxLength, minLength, required } from "@vuelidate/validators";
-// const state = reactive({
-//   form: {
-//     productName: "",
-//     password: "",
-//   },
-// });
-
-// /**
-//  * validation rules
-//  */
-// const rules = {
-//   productName: { required },
-//   //password: { required },
-// };
-// const v$ = useVuelidate(rules, state.form);
-
-// /**
-//  * login
-//  *
-//  * @returns {Promise<void>}
-//  */
-// async function login(): Promise<void> {
-//   const isFormCorrect = await v$.value.$validate();
-//   if (!isFormCorrect) {
-//     // Show error messages
-//     alert("valid valid FirstName");
-
-//     console.log("please enter data in valid formate");
-//     return;
-//   }
-
-//   //     const payload = { ...state.form };
-//   // Call API with payload
-// }
+import { maxLength, minLength, required, alpha } from "@vuelidate/validators";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// import { ref } from "vue";
-// const productName = ref("");
-// const price = ref("");
-// const stock = ref("");
-// const size = ref("");
-// const emp_contact = ref("");
-// const emp_salary = ref("");
-// const emp_dept = ref("");
 
-// const productName =
 const mydata = reactive({
   allProduct: [],
   product: {
     productName: "",
     price: "",
     stock: "",
-    //size: "",
-    // emp_contact: '',
-    // emp_salary: '',
-    // emp_dept: '',
   },
   size: [],
   id: [],
+  serverErrors: [],
 });
-// const rules = {
-//   productName: { required },
-//   price: { required },
-//   stock: { required },
-//   size: { required },
-//   //   //password: { required },
-// };
 
 var productId;
 const rules = computed(() => {
   return {
     productName: {
       required,
+      alpha,
+
       minLenght: minLength(5),
       maxLength: maxLength(15),
     },
@@ -286,14 +224,6 @@ const rules = computed(() => {
 });
 
 const v$ = useVuelidate(rules, mydata.product);
-//const v$ = useVuelidate(rules, mydata.product );
-
-/**
- * login
- *
- *
-//  */
-// async function login(): Promise<void> {
 
 getProductAPI();
 
@@ -312,33 +242,22 @@ async function getSize() {
 console.log(getSize());
 
 async function onFormSubmit1() {
-  try {
-    //console.log(mydata.product);
-    //console.log(mydata.size);
-    const result = await v$.value.$validate();
-    if (result) {
-      alert("product created");
-    } else {
-      alert("product not created");
-    }
+  const result = await v$.value.$validate();
+  if (result) {
     await $fetch("http://localhost:3001/product", {
       method: "POST",
       body: JSON.stringify(mydata.product),
-    }).then((res) => {
-      console.log("id", res.id);
-      productId = res.id;
-      console.log("working line 344");
-      categoriesApi();
-      console.log("374 function working" + productId);
-    });
-    console.log("hiii amit");
-  } catch (err) {
-    // document.write();
-    console.log({
-      statusCode: 404,
-      message: "User not found",
-    });
+    })
+      .then((res) => {
+        productId = res.id;
+        categoriesApi();
+      })
+      .catch((error) => {
+        console.log(error);
+        mydata.serverErrors = error.data.message;
+      });
   }
+  // }
   getProductAPI();
   getSize();
 }
@@ -364,7 +283,7 @@ async function editProduct(id) {
   getProductAPI();
 }
 getProductAPI();
-// // Delete API
+
 async function onDeleteOfProduct(id) {
   await $fetch("http://localhost:3001/product/" + id, {
     method: "DELETE",
@@ -385,7 +304,6 @@ async function categoriesApi() {
       body: JSON.stringify(obj),
     }).then((res) => {
       console.log("data", obj);
-      // studId = res.student_id;
     });
   });
 }
